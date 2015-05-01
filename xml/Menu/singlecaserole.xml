@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/ajax/singlecaserole</path>
+    <page_callback>CRM_Singlecaserole_Page_SingleCaseRole</page_callback>
+    <title>SingleCaseRole</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
