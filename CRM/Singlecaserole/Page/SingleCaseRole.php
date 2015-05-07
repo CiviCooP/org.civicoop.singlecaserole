@@ -14,6 +14,13 @@ class CRM_Singlecaserole_Page_SingleCaseRole extends CRM_Core_Page {
      * extension Singlecaserole: validate if more than one instance of role is allowed
      */
     $status = $this->checkMultipleRolesAllowed($caseID, $relType, $relationshipID);
+    /*
+     * specific for PUM: check if Expert still has an open credit business dsa
+     */
+    if (empty($status)) {
+      $status = $this->checkExpertCanBeChanged($caseID, $relType, $relationshipID);
+    }
+
     if (empty($status)) {
 
       // check if there are multiple clients for this case, if so then we need create
@@ -66,6 +73,25 @@ class CRM_Singlecaserole_Page_SingleCaseRole extends CRM_Core_Page {
     $relation['status'] = $status;
     echo json_encode($relation);
     CRM_Utils_System::civiExit();
+  }
+
+  protected function checkExpertCanBeChanged($caseId, $relTypeId, $relationshipId) {
+
+    $status = null;
+    if ($relationshipId != 'null') {
+      if (method_exists('CRM_Businessdsa_BAO_BusinessDsa', 'canExpertBeRemovedFromCase')
+        && method_exists('CRM_Threepeas_Utils', 'getRelationshipTypeWithName')) {
+
+        $expertRelType = CRM_Threepeas_Utils::getRelationshipTypeWithName('Expert');
+        $expertRelTypeId = $expertRelType['id'];
+        if ($relTypeId == $expertRelTypeId) {
+          if (CRM_Businessdsa_BAO_BusinessDsa::canExpertBeRemovedFromCase($caseId) == FALSE) {
+            $status = 'pumbdsa-error';
+          }
+        }
+      }
+    }
+    return $status;
   }
 
   /**
