@@ -23,12 +23,7 @@ class CRM_Singlecaserole_Page_SingleCaseRole extends CRM_Core_Page {
 
     if (empty($status)) {
       // issue 3555 reset the case report fields for PUM
-      $expertRelTypeId = civicrm_api3('RelationshipType', 'getvalue', array(
-        'name_a_b' => 'Expert',
-        'name_b_a' => 'Expert',
-        'return' => 'id'
-      ));
-      CRM_Threepeas_Relationship::removeExpertCaseProjectFields($caseID, $expertRelTypeId);
+      CRM_Threepeas_Relationship::removeExpertCaseProjectFields($caseID, $relType);
       // check if there are multiple clients for this case, if so then we need create
       // relationship and also activities for each contacts
 
